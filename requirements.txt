@@ -1,0 +1,9 @@
+sqlalchemy
+psycopg2-binary
+playwright
+pandas
+apscheduler
+cryptography
+python-dotenv
+fastapi
+uvicorn

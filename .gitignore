@@ -1,0 +1,26 @@
+# Secrets
+.env
+token.json
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+build/
+
+# Node
+node_modules/
+frontend/dist/
+
+# Temp files
+downloads/
+screenshots/
+
+# OS
+.DS_Store
+
+# IDE
+.claude/
+.mcp.json
+.vscode/

@@ -36,8 +36,9 @@ function shortId(uuid) {
 
 export default function LogsViewer() {
   const [runs, setRuns] = useState([])
-  const [dateFrom, setDateFrom] = useState('')
-  const [dateTo, setDateTo] = useState('')
+  const today = new Date().toISOString().slice(0, 10)
+  const [dateFrom, setDateFrom] = useState(today)
+  const [dateTo, setDateTo] = useState(today)
   const [selectedRun, setSelectedRun] = useState(null)
   const [logs, setLogs] = useState([])
   const [loading, setLoading] = useState(false)

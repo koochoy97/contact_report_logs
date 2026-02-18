@@ -93,12 +93,12 @@ async def _do_login(page, email: str, password: str):
     """Perform email/password login on Reply.io."""
     await page.locator("input:visible").first.fill(email)
     await page.locator('input[type="password"]:visible').fill(password)
-    await page.get_by_role("button", name="Sign in").click()
+    await page.get_by_role("button", name="Sign in").click(no_wait_after=True)
     try:
-        await page.wait_for_url("**/run.reply.io/**", timeout=20_000)
+        await page.wait_for_url("**/run.reply.io/**", timeout=30_000)
     except Exception:
         pass
-    await asyncio.sleep(3)
+    await asyncio.sleep(5)
 
 
 async def _clear_overlays(page):

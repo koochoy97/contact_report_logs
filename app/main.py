@@ -1,6 +1,7 @@
 """Entry point: APScheduler cron + API server + manual trigger."""
 import asyncio
 import sys
+from contextlib import asynccontextmanager
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
@@ -27,16 +28,22 @@ def main():
     import uvicorn
     from app.api import app
 
-    scheduler = AsyncIOScheduler()
-    scheduler.add_job(
-        run_pipeline,
-        trigger=CronTrigger(hour=0, minute=0, timezone="America/Lima"),
-        id="daily_extraction",
-        name="Extracción diaria de contactos Reply.io",
-        replace_existing=True,
-    )
-    scheduler.start()
-    print("[main] Scheduler iniciado — cron a las 00:00 America/Lima (05:00 UTC)")
+    @asynccontextmanager
+    async def lifespan(_app):
+        scheduler = AsyncIOScheduler()
+        scheduler.add_job(
+            run_pipeline,
+            trigger=CronTrigger(hour=0, minute=0, timezone="America/Lima"),
+            id="daily_extraction",
+            name="Extracción diaria de contactos Reply.io",
+            replace_existing=True,
+        )
+        scheduler.start()
+        print("[main] Scheduler iniciado — cron a las 00:00 America/Lima (05:00 UTC)")
+        yield
+        scheduler.shutdown()
+
+    app.router.lifespan_context = lifespan
     print("[main] API + Frontend en http://0.0.0.0:8001")
 
     uvicorn.run(app, host="0.0.0.0", port=8001)

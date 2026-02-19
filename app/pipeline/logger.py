@@ -1,10 +1,20 @@
 """Pipeline logging to core.contact_report_extraction_logs."""
+import logging
+import sys
 import uuid
 from datetime import datetime
 
 from sqlalchemy import text
 
 from app.db import engine
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+    stream=sys.stdout,
+)
+log = logging.getLogger("pipeline")
 
 
 def new_run_id() -> str:
@@ -20,7 +30,16 @@ def log_event(
     rows_count: int | None = None,
     error_message: str | None = None,
 ):
-    """Insert a log row into core.contact_report_extraction_logs."""
+    """Insert a log row and print to stdout."""
+    parts = [f"[{status}]"]
+    if client:
+        parts.append(client)
+    if rows_count is not None:
+        parts.append(f"{rows_count:,} filas")
+    if error_message:
+        parts.append(f"ERROR: {error_message}")
+    log.info(" ".join(parts))
+
     with engine.begin() as conn:
         conn.execute(
             text("""

@@ -21,6 +21,12 @@ app.add_middleware(
 FRONTEND_DIST = Path(__file__).parent.parent / "frontend" / "dist"
 
 
+@app.get("/api/health")
+def health():
+    """Health check for Coolify / Docker."""
+    return {"status": "ok"}
+
+
 @app.get("/api/runs")
 def list_runs(
     date_from: str | None = Query(None, description="YYYY-MM-DD"),

@@ -38,5 +38,8 @@ COPY --from=frontend-build /frontend/dist frontend/dist
 
 EXPOSE 8001
 
+HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
+    CMD wget -qO- http://localhost:8001/api/health || exit 1
+
 # Runs scheduler (cron 00:00 Lima) + API + frontend on port 8001
 CMD ["python", "-m", "app.main"]

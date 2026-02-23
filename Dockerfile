@@ -15,19 +15,15 @@ ENV TZ=America/Lima
 
 WORKDIR /app
 
-# System dependencies for Playwright Chromium
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 \
-    libxkbcommon0 libxcomposite1 libxdamage1 libxrandr2 libgbm1 \
-    libpango-1.0-0 libcairo2 libasound2 libxshmfence1 \
-    fonts-liberation wget ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
-
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Install Playwright Chromium
-RUN playwright install chromium
+# Install Playwright Chromium + all its OS dependencies
+RUN playwright install --with-deps chromium
+
+# wget for Docker HEALTHCHECK
+RUN apt-get update && apt-get install -y --no-install-recommends wget \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy Python app
 COPY app/ app/
